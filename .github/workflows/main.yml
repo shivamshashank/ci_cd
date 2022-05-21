@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -29,17 +29,17 @@ jobs:
       - name: Build Android App
         if: startsWith(github.ref, 'refs/tags/v')
         run: flutter build apk --release
-#
-#      - name: Build iOS App
-#        if: startsWith(github.ref, 'refs/tags/v')
-#        run: |
-#          flutter build ios --no-codesign
-#          cd build/ios/iphoneos
-#          mkdir Payload
-#          cd Payload
-#          ln -s ../Runner.app
-#          cd ..
-#          zip -r app.ipa Payload
+
+      - name: Build iOS App
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
 
       - name: Build web
         if: startsWith(github.ref, 'refs/tags/v')
@@ -60,8 +60,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.TOKEN }}
-#          artifacts: 'build/app/outputs/**/*.apk,build/ios/iphoneos/app.ipa,build/web/web-app.zip'
-          artifacts: 'build/app/outputs/**/*.apk,build/web/web-app.zip'
+          artifacts: 'build/app/outputs/**/*.apk,build/ios/iphoneos/app.ipa,build/web/web-app.zip'
 
   deploy:
     if: startsWith(github.ref, 'refs/tags/v')
